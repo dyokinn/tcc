@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship
 
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
+from marshmallow import Schema, fields
 
 # Models
 class User(db.Model):
@@ -45,6 +46,9 @@ class TextSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Text
         load_instance = True
+class TextResultSchema(Schema):
+    content = fields.Str()
+    score = fields.Float()
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:

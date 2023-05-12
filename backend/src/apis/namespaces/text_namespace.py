@@ -22,3 +22,13 @@ class Get(Resource):
         db.session.commit()
         return make_response({"message": "foi"}, 201)
     
+@texts.route("/compare-by-text", methods=["GET"])
+class Get(Resource):
+    @texts.doc("login route")
+    def get(self):
+        args = request.args.to_dict()
+        result = TextController.compare_text_to_text(args)
+        
+        
+        return make_response(result, 201)
+    
