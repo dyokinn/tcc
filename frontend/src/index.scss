@@ -1,0 +1,11 @@
+@import "./assets/theme.scss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;700&display=swap');
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: $Black !important;
+  color: $White !important;
+  font-family: 'Poppins', sans-serif !important;   
+}

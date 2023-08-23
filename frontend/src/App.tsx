@@ -1,25 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import {DrawerContextProvider} from "./contexts/useDrawer" 
+import "./index.scss"
+import Scopes from './pages/Scopes';
+import TextAnalysis from './pages/TextAnalysis';
+import About from './pages/About';
+import Login from './pages/Login';
+import { AuthContextProvider } from './contexts/useAuth';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <AuthContextProvider>
+        <DrawerContextProvider>
+            <Routes>
+            <Route path="/" element={<Login/>} />
+            <Route path="/login" element={<Login/>} />
+            <Route path="/scopes" element={<Scopes/>} />
+            <Route path="/analysis" element={<TextAnalysis/>} />
+            <Route path="/about" element={<About/>} />
+            <Route path="/login" element={<Login/>} />
+            </Routes>
+        </DrawerContextProvider>
+      </AuthContextProvider>
+    </BrowserRouter>
   );
 }
 

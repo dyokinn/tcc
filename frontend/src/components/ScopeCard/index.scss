@@ -1,0 +1,63 @@
+@import "../../assets/theme.scss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;700&display=swap');
+
+.scope-card{
+    background-color: $Gray;
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    margin: 24px;
+    border-radius: 15px;
+    padding: 16px;
+    .info{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 5%;
+        box-sizing: border-box;
+
+    .info-box{
+        display: flex;
+        align-items: center;
+        gap: 56px;
+    }
+
+    .actions{
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        .edit{
+            background-color: $Blue !important;
+        }
+
+        .delete{
+            background-color: $Red !important;
+        }
+    }
+    }
+
+    .expanded{
+        padding: 36px;
+        margin-left: 10%;
+        
+        .text-wrapper{
+            display: flex;
+            flex-direction: row;
+            .text-content{
+                width: 80%;
+
+            }
+        }
+    }
+}
+
+.fixed{
+    background-color: transparent !important;
+    border: 1px solid $Green !important;
+    padding: 32px;
+    svg{
+        fill: $Green !important;
+    }
+}

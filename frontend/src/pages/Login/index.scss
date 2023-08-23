@@ -1,0 +1,15 @@
+#login-page {
+    #inputs{
+        display: flex;
+        flex-direction: column;
+        gap: 36px;
+        margin-top: 24px;
+        margin-bottom: 32px;
+    }
+
+    #actions{
+        display: flex;
+        flex-direction: row;
+        gap: 42px;
+    }
+}

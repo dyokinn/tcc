@@ -1,0 +1,38 @@
+@import "../../assets/theme.scss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;700&display=swap');
+
+.drawer {
+    background-color: $Gray !important;
+    border-bottom: 1px solid $Gray !important;
+    p, a, h1, h2{
+        font-family: 'Poppins', sans-serif !important;        
+        font-size: 12px !important;
+    }
+
+}
+
+.drawer-header {
+    background-color: $Gray !important;
+    font-family: 'Poppins', sans-serif !important;        
+
+}
+
+.drawer-bar {
+    background-color: $Gray !important;
+    height: 100%;
+    font-family: 'Poppins', sans-serif !important;        
+
+}
+
+.icon {
+    color: $White !important;
+}
+
+.list-item {
+    p, a, span {
+        color: $White !important;
+        font-family: 'Poppins', sans-serif !important;        
+        text-decoration: none;
+        font-weight: bold;
+    }
+}
