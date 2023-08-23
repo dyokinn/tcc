@@ -1,0 +1,22 @@
+<XML ID="Microsoft Search Thesaurus">
+
+    <thesaurus xmlns="x-schema:tsSchema.xml">
+    <diacritics_sensitive>0</diacritics_sensitive>
+        <expansion>
+            <sub>África</sub>
+            <sub>Africano</sub>
+            <sub>Africanos</sub>
+        </expansion>
+        <expansion>
+            <sub>Brasil</sub>
+            <sub>Brasileiro</sub>
+            <sub>Brasileiros</sub>
+        </expansion>
+        <expansion>
+            <sub>Navegação</sub>
+            <sub>Navegar</sub>
+            <sub>Navegavam</sub>
+        </expansion>
+    </thesaurus>
+
+</XML>

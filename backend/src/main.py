@@ -1,6 +1,9 @@
+from controllers.user_controller import UserController
 from config import app, db
 from apis.versions.v1 import blueprint as api_v1_blueprint
 from models import User, Scope, Text
+from flask import make_response, request
+
 # registra os blueprints
 app.register_blueprint(api_v1_blueprint)
 

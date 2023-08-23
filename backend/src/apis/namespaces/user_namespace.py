@@ -15,14 +15,17 @@ users = Namespace('users', description='User related operations')
 class Get(Resource):
     @users.doc("login route")
     def post(self):
-        return make_response({"message": "foi"}, 200)
+        data = request.get_json()
+        user_id = UserController.login(data)
+        print(data)
+        return make_response({"userId": user_id}, 200) if user_id != 0 else make_response({"message": "wrong credentials"}, 400)
     
 @users.route("/register", methods=["POST"])
 class Register(Resource):
     @users.doc("route designed to create an user in the database")
     def post(self):
         data = request.get_json()
-        user = UserController.build_user(data)
+        user = UserController.signup(data)
         
         db.session.add(user)
         db.session.commit()

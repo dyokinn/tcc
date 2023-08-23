@@ -1,8 +1,9 @@
 from typing import List
 from flask import jsonify
+from sqlalchemy.orm import Query
 
 from sqlalchemy import select
-from models import Text, TextResultSchema
+from models import Text, TextResultSchema, TextSchema
 from sqlalchemy.sql import text
 from config import db
 
@@ -15,9 +16,16 @@ class TextController:
         )
 
         return text_obj
+    
     @staticmethod
+    def read_by_scope(scope_id: int) -> List[Text]:
+        text_schema = TextSchema(many=True)
+        query: Query = db.session.query(Text)
+        texts = query.filter(Text.scope_id == scope_id).all()
+        return text_schema.dump(texts)
 
-    def build_texts(data) -> List[Text]:
+    @staticmethod
+    def create_many(data) -> List[Text]:
         scope_id = data["scope_id"]
         json_texts = data["texts"]
         text_object_list = []
@@ -29,8 +37,19 @@ class TextController:
             )
             text_object_list.append(text_object)
 
-        return text_object_list
+        db.session.add_all(text_object_list)
+        db.session.commit()
+        
+        return TextController.read_by_scope(scope_id)
     
+
+    @staticmethod
+    def delete(text_id:int) -> int:
+        query: Query = db.session.query(Text)
+        result = query.filter(Text.id == text_id).delete()
+        db.session.commit()
+        return result
+
     @staticmethod
     def compare_text_to_text(data) -> Text:
 

@@ -1,4 +1,5 @@
 from flask import Blueprint
+from flask_cors import CORS
 from flask_restx import Api
 from apis.namespaces.user_namespace import users
 from apis.namespaces.scope_namespace import scopes

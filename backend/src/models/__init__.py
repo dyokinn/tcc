@@ -59,3 +59,5 @@ class ScopeSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Scope
         load_instance = True
+        
+    texts = fields.List(fields.Nested(TextSchema))
