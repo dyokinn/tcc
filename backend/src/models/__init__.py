@@ -16,7 +16,7 @@ class User(db.Model):
     password = db.Column(db.String(100))
 
     # Relationships
-    scopes: Mapped[List["Scope"]] = relationship(back_populates="user", cascade="all,delete")
+    scopes: Mapped[List["Scope"]] = relationship(back_populates="user")
 
 
 class Scope(db.Model):
@@ -27,7 +27,7 @@ class Scope(db.Model):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
     # Relationships
-    user:Mapped["User"]= relationship(back_populates="scopes", cascade="all,delete")
+    user:Mapped["User"]= relationship(back_populates="scopes")
     texts: Mapped[List["Text"]] = relationship(back_populates="scope", cascade="all,delete")
     
 
@@ -35,10 +35,10 @@ class Text(db.Model):
     __tablename__ = 'texts'
     id = db.Column("id", db.Integer, primary_key=True, autoincrement=True)
     content = db.Column(db.Text())
-    scope_id: Mapped[int] = mapped_column(ForeignKey("scopes.id"))
+    scope_id: Mapped[int] = mapped_column(ForeignKey("scopes.id", ondelete="CASCADE"))
 
     # Relationships
-    scope: Mapped["Scope"] = relationship(back_populates="texts", cascade="all,delete")
+    scope: Mapped["Scope"] = relationship(back_populates="texts")
 
 
 # Schema Definition for serializers

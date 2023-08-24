@@ -48,5 +48,6 @@ class Create(Resource):
 class Delete(Resource):
     @scopes.doc("scope deletion route")
     def delete(self, id: int):
-        result = ScopeController.delete(id)
-        return make_response({"message": result}, 200)
+        is_deleted = ScopeController.delete(id)
+        result = ScopeController.get(None)
+        return make_response(result, 200)

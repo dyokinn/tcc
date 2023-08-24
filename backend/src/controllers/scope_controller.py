@@ -42,8 +42,9 @@ class ScopeController:
         return scope_schema.dump(scope)
     
     @staticmethod
-    def delete(id:int) -> int:
+    def delete(id:int) -> bool:
         query: Query = db.session.query(Scope)
-        result = query.filter(Scope.id == id).delete()
+        result = query.filter(Scope.id == id).first()
+        db.session.delete(result)
         db.session.commit()
-        return result
+        return True if result else False
