@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomButton from "../Common/CustomButton"
 import DeleteIcon from '@mui/icons-material/Delete';
 import Dialog from '@mui/material/Dialog';
@@ -12,10 +12,12 @@ import useTexts from "../../hooks/useTexts";
 import IScope from "../../assets/commonInterfaces/IScope";
 import IText from "../../assets/commonInterfaces/IText";
 import CustomTextInput from "../Common/CustomTextInput";
+import useScopes from "../../hooks/useScopes";
 
 interface ScopeCardProps {
     scope: IScope
     isFixed?: boolean
+    popModal: (value: boolean, type: "create" | "update", scope?:IScope) => void
 }
 
 const ScopeCard = (props:ScopeCardProps) => {
@@ -28,8 +30,13 @@ const ScopeCard = (props:ScopeCardProps) => {
         setIsLoading: setIsLoading
     })
 
-    const handleExpansion= () => {
+    useEffect(() => {
         setTexts(props.scope.texts)
+    }, [])
+
+    const {deleteScope} = useScopes({userId:props.scope.user_id})
+
+    const handleExpansion= () => {
         setIsExpanded((prevState) => !prevState);
       };
 
@@ -42,8 +49,8 @@ const ScopeCard = (props:ScopeCardProps) => {
                         <p>{props.scope.description}</p>
                     </div>
                     <div className="actions">
-                        <CustomButton disabled={false} classname="edit" variant={"text"} children={<EditIcon className="icon"/>}/>
-                        <CustomButton disabled={false} classname="delete" variant={"text"} children={<DeleteIcon className="icon"/>}/>
+                        <CustomButton disabled={false} classname="edit" variant={"text"} onClick={e => props.popModal(true, "update", props.scope)} children={<EditIcon className="icon"/>}/>
+                        <CustomButton disabled={false} classname="delete" variant={"text"} onClick={e => deleteScope(props.scope.id)} children={<DeleteIcon className="icon"/>}/>
                         {
                             isExpanded
                             ? <CustomButton disabled={false} variant={"text"} onClick={handleExpansion} children={<ExpandLessIcon className="icon"/>}/>
@@ -59,16 +66,16 @@ const ScopeCard = (props:ScopeCardProps) => {
                                 <CustomButton disabled={false} variant={"text"} onClick={async (e:any) => await deleteText(text.id)} children={<DeleteIcon className="icon"/>}/>
                             </div>
                         ))}
-                        <div>
-                            <CustomTextInput disabled={false} label={"new text"} onChange={(e: any) => setNewText(e.target.value)}/>
-                            <CustomButton disabled={false} variant={"contained"} onClick={async (e:any) => await addText(newText)}>Add</CustomButton>
+                        <div className="actions">
+                            <CustomTextInput disabled={false} label={"new text"} value={newText} onChange={(e: any) => setNewText(e.target.value)}/>
+                            <CustomButton disabled={false} variant={"outlined"} onClick={async (e:any) => await addText(newText, setNewText)} children={<AddIcon className="icon"/>} />
                         </div>
                     </div>
                 </Collapse>
             </div>
 
         :   <div className="scope-card fixed">
-                <CustomButton disabled={false} classname="add" variant={"text"} children={<AddIcon className="icon"/>}/>
+                <CustomButton disabled={false} classname="add" variant={"text"} children={<AddIcon className="icon"/>} onClick={e => props.popModal(true, "create")}/>
             </div>
     )
 }

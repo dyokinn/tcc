@@ -13,8 +13,13 @@ export const CustomAuthContext = createContext<ICustomAuthContext>({} as ICustom
 // Exporta funcionamento do contexto no componente de rotas
 export function AuthContextProvider(props:any) {
     
+    function getUserId(){
+        const initialState = localStorage.getItem("userId")
+        return Number(initialState)
+    }
+
     // Hook de estado para o contexto
-    const [userId, setUserId] = useState(0)
+    const [userId, setUserId] = useState(getUserId)
     const navigate = useNavigate()
 
     async function login(username: string, password:string, withCreate:boolean = false) {
@@ -28,13 +33,16 @@ export function AuthContextProvider(props:any) {
             )
             
             setUserId(response.data.userId)
+            localStorage.setItem("userId", response.data.userId);
             navigate("/scopes")
         } catch (error) {
+            window.alert("Error: wrong credentials")
             console.log(error);
         }
     }
 
     function logout() {
+        localStorage.clear()
         setUserId(0)
     }
 

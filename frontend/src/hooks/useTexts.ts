@@ -11,7 +11,7 @@ interface IUseTexts {
 const useTexts = (props: IUseTexts) => {
     const [texts, setTexts] = useState<IText[]>([])
 
-    const addText = async (newText:string) => {
+    const addText = async (newText:string, setTextField:React.Dispatch<React.SetStateAction<string>>) => {
         try {
             props.setIsLoading(true)
             const response = await api.post(
@@ -21,8 +21,8 @@ const useTexts = (props: IUseTexts) => {
                 }
             )
             setTexts([...texts, response.data[response.data.length - 1]])
+            setTextField("")
             props.setIsLoading(false)
-            window.alert("Text successfullt added to scope!")
         } catch (error) {
             console.log(error)
             props.setIsLoading(false)
@@ -41,7 +41,6 @@ const useTexts = (props: IUseTexts) => {
             let filteredRows = texts.filter(text => text.id !== id);
             setTexts(filteredRows);
             props.setIsLoading(false)
-            window.alert("text successfully removed from scope!")
 
         } catch (error) {
             props.setIsLoading(false)
