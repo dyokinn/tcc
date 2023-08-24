@@ -25,8 +25,7 @@ class Register(Resource):
     @users.doc("route designed to create an user in the database")
     def post(self):
         data = request.get_json()
-        user = UserController.signup(data)
+        user_id = UserController.signup(data)
         
-        db.session.add(user)
         db.session.commit()
-        return make_response({"message": "foi"}, 201)
+        return make_response({"userId": user_id}, 200) if user_id != 0 else make_response({"message": "error during signup"}, 400)

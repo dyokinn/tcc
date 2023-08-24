@@ -11,7 +11,7 @@ from sqlalchemy.orm import Query
 scopes = Namespace('scopes', description='Scope related operations')
 
 # Rotas
-@scopes.route("/<int:id>", methods=["GET"])
+@scopes.route("/<int:id>", methods=["GET", "PUT"])
 @scopes.route("/", methods=["GET"])
 class Get(Resource):
     @scopes.doc("route designed to retrieve all scopes from database")
@@ -19,6 +19,18 @@ class Get(Resource):
         resp = None
         try:
             scopes = ScopeController.get(id)
+            resp =  make_response(scopes, 200)
+        except Exception as e:
+            resp =  make_response(e, 500)
+        return resp
+    
+    @scopes.doc("route designed to edit scope from database")
+    def put(self, id:int=None):
+        resp = None
+        data = request.get_json()
+        
+        try:
+            scopes = ScopeController.update(id, data)
             resp =  make_response(scopes, 200)
         except Exception as e:
             resp =  make_response(e, 500)

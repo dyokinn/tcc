@@ -28,6 +28,20 @@ class ScopeController:
         return scope_schema.dump(scope)
     
     @staticmethod
+    def update(id, data) -> dict:
+        scope_schema = ScopeSchema()
+
+        query: Query = db.session.query(Scope)
+        scope: Scope = query.filter(Scope.id == id).first()
+        
+        scope.name = data["name"]
+        scope.description = data["description"]
+
+        db.session.commit()
+
+        return scope_schema.dump(scope)
+    
+    @staticmethod
     def delete(id:int) -> int:
         query: Query = db.session.query(Scope)
         result = query.filter(Scope.id == id).delete()
