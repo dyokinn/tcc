@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import IScope from "../assets/commonInterfaces/IScope";
 import api from "../assets/api";
-import IText from "../assets/commonInterfaces/IText";
 
 interface IUseScopes {
     userId: number
@@ -16,13 +15,15 @@ const useScopes = (props: IUseScopes) => {
         try {
             const response = await api.get("/scopes/")
             setScopes(response.data)
+            console.log("foi");
+            
         } catch (error) {
             console.log("erro")
         }
         
     }
 
-    const sendScope = async ( type:string, setIsOpen: Dispatch<React.SetStateAction<boolean>>, scope?: IScope) => {
+    const sendScope = async ( type:string, setIsOpen: Dispatch<React.SetStateAction<boolean>>, scopeId?: number) => {
         try {
             const response = type === "create"
             ? await api.post("/scopes/",
@@ -32,7 +33,7 @@ const useScopes = (props: IUseScopes) => {
                     "user_id": props.userId
                 }
             )
-            : await api.put("/scopes/" + scope_id,
+            : await api.put("/scopes/" + scopeId,
                 {
                     name,
                     description,
@@ -41,8 +42,12 @@ const useScopes = (props: IUseScopes) => {
             if(type == "create") {
                 setScopes([...scopes, response.data])
             } else {
+                console.log(scopeId);
+                
                 let mirroredScopes = scopes
                 let index = mirroredScopes.findIndex(scope => scope.id == response.data["id"])
+                console.log(index);
+                
                 mirroredScopes[index] = response.data
                 setScopes(mirroredScopes)
             }
@@ -57,7 +62,10 @@ const useScopes = (props: IUseScopes) => {
     const deleteScope = async (scopeId:number) => {
         try {
             if (window.confirm("Are you sure to delete this scope?")){
-                const result = await api.delete("/scopes/" + scopeId)
+                const response = await api.delete("/scopes/" + scopeId)
+                console.log("excluiu");
+                setScopes(response.data)
+
             }
         } catch(e){
             window.alert("There was an error deleting this scope, please try again later!")

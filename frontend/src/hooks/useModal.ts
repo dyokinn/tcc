@@ -4,18 +4,18 @@ import IScope from "../assets/commonInterfaces/IScope"
 const useModal = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [type, setType] = useState("")
-    const [scope, setScope] = useState<IScope>({} as IScope)
+    const [scopeId, setScopeId] = useState(0)
 
-    const popModal = async (value: boolean, type: "create" | "update", scope?:IScope) => {
+    const popModal = async (value: boolean, type: "create" | "update", scopeId?:number) => {
         setIsOpen(value)
         setType(type)
-        if (scope){
-            setScope(scope)
+        if (scopeId != null){
+            setScopeId(scopeId)
         }
     }
 
 
-    return{ isOpen, setIsOpen, type, scope, popModal}
+    return{ isOpen, setIsOpen, type, scopeId, popModal}
 }
 
 export default useModal

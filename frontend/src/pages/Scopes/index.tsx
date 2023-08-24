@@ -13,7 +13,7 @@ const Scopes = () => {
     const {userId} = useContext(CustomAuthContext);
 
     const {isOpen, setIsOpen, type, scopeId, popModal} = useModal()
-    const {name, setName, description, setDescription, getScopes, scopes, sendScope} = useScopes({userId})
+    const {name, setName, description, setDescription, getScopes, scopes, sendScope, deleteScope} = useScopes({userId})
 
 
     useEffect(() => {
@@ -36,9 +36,10 @@ const Scopes = () => {
                         <ScopeCard
                             scope = {scope}
                             popModal={popModal}
+                            deleteScope={deleteScope}
                         />
                     ))}
-                    <ScopeCard isFixed scope={{} as IScope} popModal={popModal}/>
+                    <ScopeCard isFixed scope={{} as IScope} popModal={popModal} deleteScope={deleteScope}/>
                 </div>
             </div>
             <Dialog open={isOpen} onClose={e => setIsOpen(false)}>
