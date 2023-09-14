@@ -47,6 +47,7 @@ class TextSchema(ma.SQLAlchemyAutoSchema):
         model = Text
         load_instance = True
 class TextResultSchema(Schema):
+    id = fields.Integer()
     content = fields.Str()
     score = fields.Float()
 

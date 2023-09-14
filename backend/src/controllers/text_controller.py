@@ -2,7 +2,7 @@ from typing import List
 from flask import jsonify
 from sqlalchemy.orm import Query
 
-from sqlalchemy import select
+from sqlalchemy import Integer, String, bindparam, select
 from models import Text, TextResultSchema, TextSchema
 from sqlalchemy.sql import text
 from config import db
@@ -52,11 +52,11 @@ class TextController:
 
     @staticmethod
     def compare_text_to_text(data) -> Text:
-
+        print(data)
         with db.engine.connect() as con:
-            if data["near_options"] == None:
+            if data["near_options"] == "":
                 statement = text("""
-                    SELECT content, score FROM SEMANTICSIMILARITYTABLE  
+                    SELECT id, content, score FROM SEMANTICSIMILARITYTABLE  
                         (  
                             [tcc-dev].dbo.texts,
                             content,  
@@ -66,30 +66,36 @@ class TextController:
                     ON KEY_TBL.matched_document_key = t.id
                     WHERE scope_id = :scope_id
                     AND SCORE > :min_score
+                    AND SCORE < :max_score
                     ORDER BY KEY_TBL.score DESC;
-                """).bindparams(text_id = data["text_id"], scope_id = data["scope_id"], min_score = data["min_score"])
+                """).bindparams(text_id = data["text_id"], scope_id = data["scope_id"], min_score = data["min_score"], max_score = data["max_score"])
 
             else:
                 optionals_text = "and "
                 filters = str(data["near_options"]).split("&")
-                parsed_filters = [f"CONTAINS(content, 'NEAR(({near_filter.split('|')[0]}, { near_filter.split('|')[1] } ), 2, TRUE)')" for near_filter in filters]
+                parsed_filters = [f"""CONTAINS(content, 'NEAR(({near_filter.split('|')[0]}, { near_filter.split('|')[1] } ), 2, TRUE)')""" for near_filter in filters]
                 parsed_filters_string = optionals_text + " and ".join(parsed_filters)
-
-                statement = text("""
-                    SELECT content, score FROM SEMANTICSIMILARITYTABLE  
-                        (  
-                            [tcc-dev].dbo.texts,
-                            content,  
-                            :text_id
-                        ) AS KEY_TBL  
-                        LEFT JOIN dbo.texts AS t
-                    ON KEY_TBL.matched_document_key = t.id
-                    WHERE scope_id = :scope_id
-                    AND SCORE > :min_score
-                    :near_options
-                    ORDER BY KEY_TBL.score DESC;
-                """).bindparams(text_id = data["text_id"], scope_id = data["scope_id"], min_score = data["min_score"], near_options = parsed_filters_string)
-                
+                print(parsed_filters_string)
+                statement = text(
+                    """
+                        SELECT id, content, score FROM SEMANTICSIMILARITYTABLE  
+                            (  
+                                [tcc-dev].dbo.texts,
+                                content,  
+                                :text_id
+                            ) AS KEY_TBL  
+                            LEFT JOIN dbo.texts AS t
+                        ON KEY_TBL.matched_document_key = t.id
+                        WHERE scope_id = :scope_id
+                        AND SCORE > :min_score
+                        AND SCORE < :max_score
+                    """ + parsed_filters_string
+                ).bindparams(
+                    bindparam("text_id", type_= Integer, value=data["text_id"]),
+                    bindparam("scope_id", type_= Integer, value=data["scope_id"]),
+                    bindparam("min_score", value=data["min_score"]),
+                    bindparam("max_score", value=data["max_score"]),
+                )
             rs = con.execute(statement)
             return TextResultSchema().dump(rs, many=True)
 

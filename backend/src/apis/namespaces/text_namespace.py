@@ -34,6 +34,5 @@ class CompareByText(Resource):
         args = request.args.to_dict()
         result = TextController.compare_text_to_text(args)
         
-        
         return make_response(result, 201)
     
