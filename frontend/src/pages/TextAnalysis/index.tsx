@@ -9,11 +9,7 @@ import IRowScore from "../../assets/commonInterfaces/IRowScore"
 
 const TextAnalysis = () => {
 
-    const [scope, setScope] = useState<IScope | null>(null)
-    const [baseText, setBaseText] = useState<IText | null>(null)
-    const [minScore, setMinScore] = useState("")
-    const [maxScore, setMaxScore] = useState("")
-    const [nearOptions, setNearOptions] = useState([])
+
     
     const [rows, setRows] = useState<IRowScore[]>([])
 
@@ -21,10 +17,6 @@ const TextAnalysis = () => {
         <CustomDrawer>
             <h1>Análise</h1>
             <SearchBar 
-                scopeState={[scope, setScope]}
-                baseTextState={[baseText, setBaseText]}
-                minScoreState={[minScore, setMinScore]}
-                maxScoreState={[maxScore, setMaxScore]}
                 setRows={setRows}
             />
             <CustomTable

@@ -16,25 +16,22 @@ import IScope from "../../assets/commonInterfaces/IScope"
 import IText from "../../assets/commonInterfaces/IText"
 
 interface SearchBarProps {
-    scopeState?: any[]
-    baseTextState?: any[]
-    minScoreState?: any[]
-    maxScoreState?: any[]
-    nearOptionsState?: any[]
     setRows: any,
     endElements?: any
 }
 
 
-const SearchBar = ({scopeState=[], baseTextState=[], minScoreState=[], maxScoreState=[],nearOptionsState=[], ...props}: SearchBarProps) => {
+const SearchBar = (props: SearchBarProps) => {
     
-    const [scope, setScope] = scopeState
-    const [baseText, setBaseText] = baseTextState
-    const [minScore, setMinScore] = minScoreState
-    const [maxScore, setMaxScore] = maxScoreState
+    const [scope, setScope] = useState<IScope | null>(null)
+    const [baseText, setBaseText] = useState<IText | null>(null)
+    const [concept, setConcept] = useState("")
+    const [minScore, setMinScore] = useState("")
+    const [maxScore, setMaxScore] = useState("")
     const [scopes, setScopes] = useState<any[]>([])
 
     const [isExpanded, setIsExpanded] = useState(false)
+    const [analysisType, setAnalysisType] = useState("compare-by-text")
     const [firstOption, setFirstOption] = useState("")
     const [secondOption, setSecondOption] = useState("")
 
@@ -50,13 +47,15 @@ const SearchBar = ({scopeState=[], baseTextState=[], minScoreState=[], maxScoreS
             console.log(parsedNearOptions);
             
             const response = await api.get(
-                "/texts/compare-by-text",
+                "/texts/" + analysisType,
                 {
                     params: {
                         scope_id: (scope as IScope).id,
                         text_id: (baseText as IText).id,
                         min_score: minScore,
                         max_score: maxScore,
+                        analysisType: analysisType,
+                        concept: concept,
                         near_options: parsedNearOptions
                     }
                 }
@@ -86,6 +85,23 @@ const SearchBar = ({scopeState=[], baseTextState=[], minScoreState=[], maxScoreS
     return (
         <div id="search-bar">
             <div className="row" id="main">
+
+                <CustomSelect 
+                    items={[
+                        {
+                            "text": "text to text",
+                            "value": "compare-by-text"
+                        },
+                        {
+                            "text": "text to concept",
+                            "value": "compare-by-concept"
+                        }
+                    ]} 
+                    value={analysisType} 
+                    label={"Analysis Type"} 
+                    setValue={setAnalysisType}                    
+                />
+
                 <Autocomplete
                     disablePortal
                     id="scope"
@@ -105,40 +121,46 @@ const SearchBar = ({scopeState=[], baseTextState=[], minScoreState=[], maxScoreS
                         />
                     }
                 />  
-                <Autocomplete
-                    disablePortal
-                    id="text"
-                    options={scope == null ? [] : scope.texts} 
-                    sx={{ width: 600 }}
-                    value={baseText} 
-                    onChange={(e:any, newValue:any) => setBaseText(newValue)} 
-                    getOptionLabel={option => option.content}
-                    renderInput={(params) => 
-                        <TextField  
-                            {...params}
-                            label="Base Text"  
-                            className="autocomplete"
-                        />
-                    }
-                />  
-                {minScoreState.length === 2
-                ? <CustomTextInput 
+
+                {
+                analysisType == "compare-by-text"
+                    ? <Autocomplete
+                        disablePortal
+                        id="text"
+                        options={scope == null ? [] : scope.texts} 
+                        sx={{ width: 600 }}
+                        value={baseText} 
+                        onChange={(e:any, newValue:any) => setBaseText(newValue)} 
+                        getOptionLabel={option => option.content}
+                        renderInput={(params) => 
+                            <TextField  
+                                {...params}
+                                label="Base Text"  
+                                className="autocomplete"
+                            />
+                        }
+                    />  
+                    : <CustomTextInput 
+                        disabled={false} 
+                        onChange={(e: { target: { value: SetStateAction<string> } }) => setConcept(e.target.value)} 
+                        value={concept}
+                        label={"Concept"}                    
+                    />
+                }
+                
+                <CustomTextInput 
                     onChange={(e: { target: { value: SetStateAction<string> } }) => setMinScore(e.target.value)} 
                     disabled={false} 
                     label={"Min score"}
                     value={minScore}
                     />
-                : null
-                }
-                {maxScoreState.length === 2
-                ? <CustomTextInput 
+
+                <CustomTextInput 
                     onChange={(e: { target: { value: SetStateAction<string> } }) => setMaxScore(e.target.value)} 
                     disabled={false} 
                     label={"Max score"}
                     value={maxScore}
                     />
-                : null
-                }
                 {
                     isExpanded
                     ? <CustomButton disabled={false} variant={"text"} onClick={handleExpansion} children={<ExpandLessIcon className="icon"/>}/>
