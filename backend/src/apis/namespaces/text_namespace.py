@@ -34,5 +34,13 @@ class CompareByText(Resource):
         args = request.args.to_dict()
         result = TextController.compare_text_to_text(args)
         
-        return make_response(result, 201)
+        return make_response(result, 200)
+@texts.route("/compare-by-concept", methods=["GET"])
+class CompareByConcept(Resource):
+    @texts.doc("login route")
+    def get(self):
+        args = request.args.to_dict()
+        result = TextController.compare_text_to_concept(args)
+        
+        return make_response(result, 200)
     

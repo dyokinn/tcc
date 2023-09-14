@@ -54,49 +54,37 @@ class TextController:
     def compare_text_to_text(data) -> Text:
         print(data)
         with db.engine.connect() as con:
-            if data["near_options"] == "":
-                statement = text("""
-                    SELECT id, content, score FROM SEMANTICSIMILARITYTABLE  
-                        (  
-                            [tcc-dev].dbo.texts,
-                            content,  
-                            :text_id
-                        ) AS KEY_TBL  
-                        LEFT JOIN dbo.texts AS t
-                    ON KEY_TBL.matched_document_key = t.id
-                    WHERE scope_id = :scope_id
-                    AND SCORE > :min_score
-                    AND SCORE < :max_score
-                    ORDER BY KEY_TBL.score DESC;
-                """).bindparams(text_id = data["text_id"], scope_id = data["scope_id"], min_score = data["min_score"], max_score = data["max_score"])
-
-            else:
+            statement = """SELECT id, content, score FROM SEMANTICSIMILARITYTABLE ( [tcc-dev].dbo.texts, content, :text_id) AS KEY_TBL LEFT JOIN dbo.texts AS t ON KEY_TBL.matched_document_key = t.id WHERE scope_id = :scope_id AND SCORE > :min_score AND SCORE < :max_score """ 
+            
+            if (data["near_options"] != ""):
                 optionals_text = "and "
                 filters = str(data["near_options"]).split("&")
                 parsed_filters = [f"""CONTAINS(content, 'NEAR(({near_filter.split('|')[0]}, { near_filter.split('|')[1] } ), 2, TRUE)')""" for near_filter in filters]
                 parsed_filters_string = optionals_text + " and ".join(parsed_filters)
-                print(parsed_filters_string)
-                statement = text(
-                    """
-                        SELECT id, content, score FROM SEMANTICSIMILARITYTABLE  
-                            (  
-                                [tcc-dev].dbo.texts,
-                                content,  
-                                :text_id
-                            ) AS KEY_TBL  
-                            LEFT JOIN dbo.texts AS t
-                        ON KEY_TBL.matched_document_key = t.id
-                        WHERE scope_id = :scope_id
-                        AND SCORE > :min_score
-                        AND SCORE < :max_score
-                    """ + parsed_filters_string
-                ).bindparams(
-                    bindparam("text_id", type_= Integer, value=data["text_id"]),
-                    bindparam("scope_id", type_= Integer, value=data["scope_id"]),
-                    bindparam("min_score", value=data["min_score"]),
-                    bindparam("max_score", value=data["max_score"]),
-                )
-            rs = con.execute(statement)
+
+                statement = statement + parsed_filters_string
+            
+            parsed = text(statement).bindparams(
+                bindparam("text_id", type_= Integer, value=data["text_id"]),
+                bindparam("scope_id", type_= Integer, value=data["scope_id"]),
+                bindparam("min_score", value=data["min_score"]),
+                bindparam("max_score", value=data["max_score"]),
+            )
+
+            rs = con.execute(parsed)
+            return TextResultSchema().dump(rs, many=True)
+        
+    @staticmethod
+    def compare_text_to_concept(data) -> Text:
+        with db.engine.connect() as con:
+            statement = """SELECT FT_TBL.id, FT_TBL.content, KEY_TBL.RANK as score FROM [tcc-dev].dbo.texts AS FT_TBL INNER JOIN FREETEXTTABLE([tcc-dev].dbo.texts, content, :concept) AS KEY_TBL ON FT_TBL.id = KEY_TBL.[KEY] where scope_id = :scope_id ORDER by KEY_TBL.RANK  """ 
+            print((data))
+            parsed = text(statement).bindparams(
+                bindparam("scope_id", type_= Integer, value=data["scope_id"]),
+                bindparam("concept", type_= String, value=data["concept"])
+            )
+
+            rs = con.execute(parsed)
             return TextResultSchema().dump(rs, many=True)
 
 # DECLARE @conteudo_ref_id VARCHAR(MAX)
