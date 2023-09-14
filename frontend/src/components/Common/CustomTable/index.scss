@@ -1,0 +1,28 @@
+@import "../../../assets/theme.scss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;700&display=swap');
+
+.datagrid {
+    background-color: $Gray;
+    color: $White;
+    border: 1px solid $Gray !important;
+    border-radius: 15px !important;
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+    font-family: 'Poppins', sans-serif !important;   
+
+}
+
+.header{
+    background-color: $Gray;
+    color: $White;
+    border-radius: 15px !important;
+    font-size: 20px;
+}
+
+.cell{
+    color: $White;
+    background-color: $Gray;
+    border-bottom: 2px solid $Black !important;
+    font-size: 14px;
+
+}

@@ -4,7 +4,8 @@ import "./index.scss"
 interface CustomTextInputProps {
     onChange?: any,
     disabled: boolean,
-    label: string
+    label: string,
+    placeholder?: string,
     value?: string
 }
 
@@ -17,6 +18,7 @@ const CustomTextInput = (props: CustomTextInputProps) => {
                 variant="filled"
                 label={props.label} 
                 value={props.value} 
+                placeholder={props.placeholder}
             />
         </div>
     )

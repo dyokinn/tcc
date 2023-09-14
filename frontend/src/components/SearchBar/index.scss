@@ -1,0 +1,39 @@
+@import "../../assets/theme.scss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;700&display=swap');
+
+#search-bar{
+    display: flex;
+    flex-direction: column;
+    background-color: $Gray;
+    width: 90%;
+    border-radius: 15px;
+    margin-bottom: 48px;
+    padding: 24px;
+    
+    input {
+        width: 100px !important;
+    }
+    
+    #main {
+        justify-content: space-around;
+    }
+
+    .row {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .actions {
+        gap: 24px;
+    }
+
+    .expanded{
+        padding: 24px;
+
+    }
+}
+
+.autocomplete {
+    background-color: $White !important;
+    border-radius: 15px;
+}

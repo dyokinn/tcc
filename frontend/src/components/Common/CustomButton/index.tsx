@@ -16,7 +16,7 @@ const CustomButton = (props: CustomButtonProps) => {
         <>
             {props.endIcon !== undefined
             ? <Button
-                className={'button ' + props.classname}
+                className={'button' + " " + props.classname}
                 onClick={props.onClick}
                 variant={props.variant}
                 disabled={props.disabled}
@@ -25,7 +25,7 @@ const CustomButton = (props: CustomButtonProps) => {
                 {props.children}
             </Button>
             : <Button
-                className={'button ' + props.classname}
+                className={'button' + " " + props.classname}
                 onClick={props.onClick}
                 variant={props.variant}
                 disabled={props.disabled}

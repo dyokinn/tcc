@@ -1,6 +1,9 @@
+@import "../../../assets/theme.scss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;700&display=swap');
+
 .input-wrapper {
     .custom-input{
-        background-color: white !important;
+        background-color: $White !important;
         border-radius: 15px !important;
     }
 }

@@ -4,11 +4,11 @@
 .scope-card{
     background-color: $Gray;
     width: 80%;
-    display: flex;
-    flex-direction: column;
     margin: 24px;
     border-radius: 15px;
     padding: 16px;
+    display: flex;
+    flex-direction: column;
     .info{
         display: flex;
         flex-direction: row;

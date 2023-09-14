@@ -22,8 +22,8 @@ interface ScopeCardProps {
 }
 
 const ScopeCard = (props:ScopeCardProps) => {
-    const [isExpanded, setIsExpanded] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const [isExpanded, setIsExpanded] = useState(false)
     const [newText, setNewText] = useState("")
 
     const {texts, setTexts, addText, deleteText} = useTexts({
@@ -38,7 +38,6 @@ const ScopeCard = (props:ScopeCardProps) => {
     const handleExpansion= () => {
         setIsExpanded((prevState) => !prevState);
         console.log(props.scope.id);
-        
       };
 
     return (
