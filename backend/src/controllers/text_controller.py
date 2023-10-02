@@ -59,7 +59,7 @@ class TextController:
             if (data["near_options"] != ""):
                 optionals_text = "and "
                 filters = str(data["near_options"]).split("&")
-                parsed_filters = [f"""CONTAINS(content, 'NEAR(({near_filter.split('|')[0]}, { near_filter.split('|')[1] } ), 2, TRUE)')""" for near_filter in filters]
+                parsed_filters = [f"""CONTAINS(content, 'NEAR(("{near_filter.split('|')[0]}", "{ near_filter.split('|')[1] }" ), 2, TRUE)')""" for near_filter in filters]
                 parsed_filters_string = optionals_text + " and ".join(parsed_filters)
 
                 statement = statement + parsed_filters_string
