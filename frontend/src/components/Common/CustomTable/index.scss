@@ -2,8 +2,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;700&display=swap');
 
 .datagrid {
-    background-color: $Gray;
-    color: $White;
+    background-color: $Gray !important;
+    color: $White !important    ;
     border: 1px solid $Gray !important;
     border-radius: 15px !important;
     padding-top: 16px !important;

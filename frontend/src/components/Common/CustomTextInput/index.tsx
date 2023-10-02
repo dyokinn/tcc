@@ -6,6 +6,7 @@ interface CustomTextInputProps {
     disabled: boolean,
     label: string,
     placeholder?: string,
+    classname?: string,
     value?: string
 }
 
@@ -13,7 +14,7 @@ const CustomTextInput = (props: CustomTextInputProps) => {
     return (
         <div className="input-wrapper" >
             <TextField
-                className="custom-input"
+                className={"custom-input " + props.classname}
                 onChange={props.onChange}     
                 variant="filled"
                 label={props.label} 

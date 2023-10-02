@@ -26,8 +26,8 @@ const SearchBar = (props: SearchBarProps) => {
     const [scope, setScope] = useState<IScope | null>(null)
     const [baseText, setBaseText] = useState<IText | null>(null)
     const [concept, setConcept] = useState("")
-    const [minScore, setMinScore] = useState("")
-    const [maxScore, setMaxScore] = useState("")
+    const [minScore, setMinScore] = useState("0")
+    const [maxScore, setMaxScore] = useState("1")
     const [scopes, setScopes] = useState<any[]>([])
 
     const [isExpanded, setIsExpanded] = useState(false)
@@ -42,16 +42,39 @@ const SearchBar = (props: SearchBarProps) => {
     };
 
     const getScore = async () => {
+        const validateInputs = () => {
+            if (scope == null) {
+                window.alert("Scope not selected!")
+            }
+            else if (analysisType === "compare-by-text" && baseText == null) {
+                window.alert("Base Text not selected!")
+            }
+            else if (analysisType === "compare-by-concept" && concept == "") {
+                window.alert("Concept not defined!")
+            }
+            else if (minScore === "") {
+                window.alert("Min score range not defined!")
+            }
+            else if (maxScore === "") {
+                window.alert("Max score range not defined!")
+            }
+            else return true
+            return false
+        }
         try {
             const parsedNearOptions = nearOptions.map(opt => opt.firstOption + "|" + opt.secondOption).join("&")
             console.log(parsedNearOptions);
             
+            if(!validateInputs()){
+                return
+            }
+
             const response = await api.get(
                 "/texts/" + analysisType,
                 {
                     params: {
                         scope_id: (scope as IScope).id,
-                        text_id: (baseText as IText).id,
+                        text_id: baseText != null ? (baseText as IText).id : "",
                         min_score: minScore,
                         max_score: maxScore,
                         analysisType: analysisType,
@@ -61,9 +84,11 @@ const SearchBar = (props: SearchBarProps) => {
                 }
             )
             let data = response.data
+            console.log(response.data);
             props.setRows(data)
         } catch (error) {
             console.log(error)
+            props.setRows([])
         }
     }
 
@@ -128,7 +153,7 @@ const SearchBar = (props: SearchBarProps) => {
                         disablePortal
                         id="text"
                         options={scope == null ? [] : scope.texts} 
-                        sx={{ width: 600 }}
+                        sx={{ width: 500 }}
                         value={baseText} 
                         onChange={(e:any, newValue:any) => setBaseText(newValue)} 
                         getOptionLabel={option => option.content}
@@ -144,7 +169,8 @@ const SearchBar = (props: SearchBarProps) => {
                         disabled={false} 
                         onChange={(e: { target: { value: SetStateAction<string> } }) => setConcept(e.target.value)} 
                         value={concept}
-                        label={"Concept"}                    
+                        label={"Concept"}               
+                        classname="concept"     
                     />
                 }
                 
@@ -162,9 +188,11 @@ const SearchBar = (props: SearchBarProps) => {
                     value={maxScore}
                     />
                 {
-                    isExpanded
-                    ? <CustomButton disabled={false} variant={"text"} onClick={handleExpansion} children={<ExpandLessIcon className="icon"/>}/>
-                    : <CustomButton disabled={false} onClick={handleExpansion} variant={"text"} children={<ExpandMoreIcon className="icon"/>}/>
+                    analysisType == "compare-by-text"
+                    ? isExpanded
+                        ? <CustomButton disabled={false} variant={"text"} onClick={handleExpansion} children={<ExpandLessIcon className="icon"/>}/>
+                        : <CustomButton disabled={false} onClick={handleExpansion} variant={"text"} children={<ExpandMoreIcon className="icon"/>}/>
+                    :<></>
                 }
                 <CustomButton
                     variant={"contained"}
@@ -189,10 +217,20 @@ const SearchBar = (props: SearchBarProps) => {
                         <div className="actions row">
                             <CustomTextInput disabled={false} label={"first term"} value={firstOption} onChange={(e: any) => setFirstOption(e.target.value)}/>
                             <CustomTextInput disabled={false} label={"second term"} value={secondOption} onChange={(e: any) => setSecondOption(e.target.value)}/>
-                            <CustomButton disabled={false} variant={"outlined"} onClick={async (e:any) => await addOption(firstOption, secondOption, setFirstOption, setSecondOption)} children={<AddIcon className="icon"/>} />
+                            <CustomButton disabled={false} variant={"outlined"} onClick={async (e:any) => await addOption(firstOption, secondOption, setFirstOption, setSecondOption, baseText?.content || "")} children={<AddIcon className="icon"/>} />
                         </div>
                     </div>
             </Collapse>
+            {
+                analysisType == "compare-by-text" && baseText != null &&
+                <div className="base-text">
+                    <p>
+                        <i>
+                            "{baseText?.content}"
+                        </i>
+                    </p>
+                </div>
+            }
         </div>
     )
 }

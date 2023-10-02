@@ -19,9 +19,13 @@ const TextAnalysis = () => {
             <SearchBar 
                 setRows={setRows}
             />
-            <CustomTable
-                rows={rows}
-            />
+            {
+                rows.length > 0
+                ? <CustomTable
+                    rows={rows}
+                />
+                : <p>No data!</p>
+            }
         </CustomDrawer>
     )
 }
