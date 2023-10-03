@@ -8,8 +8,6 @@ import IText from "../../assets/commonInterfaces/IText"
 import IRowScore from "../../assets/commonInterfaces/IRowScore"
 
 const TextAnalysis = () => {
-
-
     
     const [rows, setRows] = useState<IRowScore[]>([])
 
