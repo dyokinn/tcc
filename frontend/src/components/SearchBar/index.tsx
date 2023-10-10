@@ -107,6 +107,13 @@ const SearchBar = (props: SearchBarProps) => {
         getScopes()
     }, [])
 
+    useEffect(() => {
+
+        setMaxScore(analysisType === "compare-by-text" ? "1" : "1000")
+        setMinScore(analysisType === "compare-by-text" ? "0" : "1")
+        
+    }, [analysisType])
+
     return (
         <div id="search-bar">
             <div className="row" id="main">
