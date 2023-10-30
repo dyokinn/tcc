@@ -51,10 +51,10 @@ class TextController:
         return result
 
     @staticmethod
-    def compare_text_to_text(data) -> Text:
+    def compare_text_to_text(data) -> any:
         print(data)
         with db.engine.connect() as con:
-            statement = """SELECT id, content, score FROM SEMANTICSIMILARITYTABLE ( [tcc].dbo.texts, content, :text_id) AS KEY_TBL LEFT JOIN dbo.texts AS t ON KEY_TBL.matched_document_key = t.id WHERE scope_id = :scope_id AND SCORE >= :min_score AND SCORE <= :max_score """ 
+            statement = """SELECT id, content, ROUND(score, 3) as 'score' FROM SEMANTICSIMILARITYTABLE ( [tcc].dbo.texts, content, :text_id) AS KEY_TBL LEFT JOIN dbo.texts AS t ON KEY_TBL.matched_document_key = t.id WHERE scope_id = :scope_id AND SCORE >= :min_score AND SCORE <= :max_score """ 
             
             if (data["near_options"] != ""):
                 optionals_text = "AND "
@@ -72,23 +72,26 @@ class TextController:
                 bindparam("max_score", type_= Integer, value=data["max_score"]),
             )
 
-            rs = con.execute(parsed)
-            return TextResultSchema().dump(rs, many=True)
+            result = con.execute(parsed)
+            parsed_result = TextResultSchema().dump(result, many=True)
+            return parsed_result
         
     @staticmethod
-    def compare_text_to_concept(data) -> Text:
+    def compare_text_to_concept(data) -> any:
+        min_score = float(data["min_score"]) * 1000
+        max_score = float(data["max_score"]) * 1000
         with db.engine.connect() as con:
-            statement = """SELECT FT_TBL.id, FT_TBL.content, KEY_TBL.RANK as score FROM [tcc].dbo.texts AS FT_TBL INNER JOIN FREETEXTTABLE([tcc].dbo.texts, content, :concept) AS KEY_TBL ON FT_TBL.id = KEY_TBL.[KEY] where scope_id = :scope_id AND RANK >= :min_score AND RANK <= :max_score ORDER by KEY_TBL.RANK DESC """ 
-            print((data))
+            statement = """SELECT FT_TBL.id, FT_TBL.content, ROUND((CAST(KEY_TBL.rank AS float)/1000), 3) as 'score' FROM [tcc].dbo.texts AS FT_TBL INNER JOIN FREETEXTTABLE([tcc].dbo.texts, content, :concept) AS KEY_TBL ON FT_TBL.id = KEY_TBL.[KEY] where scope_id = :scope_id AND RANK >= :min_score AND RANK <= :max_score ORDER by KEY_TBL.RANK DESC """ 
             parsed = text(statement).bindparams(
                 bindparam("scope_id", type_= Integer, value=data["scope_id"]),
                 bindparam("concept", type_= String, value=data["concept"]),
-                bindparam("min_score", value=data["min_score"]),
-                bindparam("max_score", value=data["max_score"]),
+                bindparam("min_score", value=min_score),
+                bindparam("max_score", value=max_score),
             )
 
-            rs = con.execute(parsed)
-            return TextResultSchema().dump(rs, many=True)
+            result = con.execute(parsed)
+            parsed_result = TextResultSchema().dump(result, many=True)
+            return parsed_result
 
 # DECLARE @conteudo_ref_id VARCHAR(MAX)
 # SET @conteudo_ref_id = (SELECT Id

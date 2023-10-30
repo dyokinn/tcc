@@ -3,7 +3,7 @@ from ast import dump
 from flask import Blueprint, jsonify, make_response, request
 from flask_restx import Namespace, Resource, fields
 from controllers.text_controller import TextController
-from models import Text, TextSchema
+from models import Text, TextResultSchema, TextSchema
 from config import db, ma
 from sqlalchemy.orm import Query
 
@@ -33,14 +33,13 @@ class CompareByText(Resource):
     def get(self):
         args = request.args.to_dict()
         result = TextController.compare_text_to_text(args)
-        
         return make_response(result, 200)
+    
 @texts.route("/compare-by-concept", methods=["GET"])
 class CompareByConcept(Resource):
     @texts.doc("login route")
     def get(self):
         args = request.args.to_dict()
         result = TextController.compare_text_to_concept(args)
-        
         return make_response(result, 200)
     

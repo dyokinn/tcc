@@ -33,14 +33,15 @@ const useTexts = (props: IUseTexts) => {
 
         try {
             props.setIsLoading(true)
-
-            const response = await api.delete(
-                "/texts/" + id,
-            )
-
-            let filteredRows = texts.filter(text => text.id !== id);
-            setTexts(filteredRows);
-            props.setIsLoading(false)
+            if (window.confirm("Are you sure to delete this text?")) {
+                const response = await api.delete(
+                    "/texts/" + id,
+                )
+    
+                let filteredRows = texts.filter(text => text.id !== id);
+                setTexts(filteredRows);
+                props.setIsLoading(false)
+            }
 
         } catch (error) {
             props.setIsLoading(false)

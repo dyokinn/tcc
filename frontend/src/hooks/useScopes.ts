@@ -11,9 +11,9 @@ const useScopes = (props: IUseScopes) => {
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
 
-    const getScopes = async () => {
+    const getScopes = async (userId: number) => {
         try {
-            const response = await api.get("/scopes/")
+            const response = await api.get("/scopes/by-user/" + userId)
             setScopes(response.data)
             console.log("foi");
             
@@ -24,6 +24,8 @@ const useScopes = (props: IUseScopes) => {
     }
 
     const sendScope = async ( type:string, setIsOpen: Dispatch<React.SetStateAction<boolean>>, scopeId?: number) => {
+        console.log(props.userId);
+        
         try {
             const response = type === "create"
             ? await api.post("/scopes/",

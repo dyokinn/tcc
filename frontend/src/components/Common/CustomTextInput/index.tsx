@@ -20,6 +20,7 @@ const CustomTextInput = (props: CustomTextInputProps) => {
                 label={props.label} 
                 value={props.value} 
                 placeholder={props.placeholder}
+                type={props.label === "password" ? "password" : "text"}
             />
         </div>
     )

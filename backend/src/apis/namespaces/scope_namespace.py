@@ -51,3 +51,16 @@ class Delete(Resource):
         is_deleted = ScopeController.delete(id)
         result = ScopeController.get(None)
         return make_response(result, 200)
+
+@scopes.route("/by-user/<int:user_id>", methods=["GET"])
+class Get(Resource):
+    @scopes.doc("route designed to retrieve all scopes from database")
+    def get(self, user_id:int):
+        resp = None
+        try:
+            scopes = ScopeController.get_by_user_id(user_id)
+            resp =  make_response(scopes, 200)
+        except Exception as e:
+            resp =  make_response(e, 500)
+        return resp
+    

@@ -17,7 +17,8 @@ import IText from "../../assets/commonInterfaces/IText"
 
 interface SearchBarProps {
     setRows: any,
-    endElements?: any
+    endElements?: any,
+    userId: number
 }
 
 
@@ -96,7 +97,7 @@ const SearchBar = (props: SearchBarProps) => {
         async function getScopes () {
             try {
                 const response = await api.get(
-                    "/scopes/"
+                    "/scopes/by-user/" + props.userId
                 )
                 let data = response.data
                 setScopes(data)
@@ -109,8 +110,8 @@ const SearchBar = (props: SearchBarProps) => {
 
     useEffect(() => {
 
-        setMaxScore(analysisType === "compare-by-text" ? "1" : "1000")
-        setMinScore(analysisType === "compare-by-text" ? "0" : "1")
+        setMaxScore("1")
+        setMinScore("0")
         
     }, [analysisType])
 

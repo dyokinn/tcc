@@ -16,16 +16,23 @@ class Get(Resource):
     @users.doc("login route")
     def post(self):
         data = request.get_json()
-        user_id = UserController.login(data)
-        print(data)
-        return make_response({"userId": user_id}, 200) if user_id != 0 else make_response({"message": "wrong credentials"}, 400)
+        user = UserController.login(data)
+        parsed_user = UserSchema().dump(user)
+        try:
+            del parsed_user["password"]
+        except Exception as e:
+            pass
+        return make_response({"user": parsed_user}, 200) if user != 0 else make_response({"message": "Wrong credentials!"}, 400)
     
 @users.route("/register", methods=["POST"])
 class Register(Resource):
     @users.doc("route designed to create an user in the database")
     def post(self):
         data = request.get_json()
-        user_id = UserController.signup(data)
-        
-        db.session.commit()
-        return make_response({"userId": user_id}, 200) if user_id != 0 else make_response({"message": "error during signup"}, 400)
+        user = UserController.signup(data)
+        parsed_user = UserSchema().dump(user)
+        try:
+            del parsed_user["password"]
+        except Exception as e:
+            pass
+        return make_response({"user": parsed_user}, 200) if user != 0 else make_response({"message": "User already exists!"}, 400)

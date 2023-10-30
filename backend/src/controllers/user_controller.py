@@ -5,25 +5,28 @@ from sqlalchemy.orm import Query
 
 class UserController:
 
-    def signup(data) -> int:
-        pw_hash = bcrypt.generate_password_hash(data["password"]).decode('utf-8')
+    def signup(data) -> User | int:
+        try:
+            pw_hash = bcrypt.generate_password_hash(data["password"]).decode('utf-8')
 
-        user = User (
-            username = data["username"],
-            password = pw_hash
-        )
-        db.session.add(user)
-        db.session.flush()
+            user = User (
+                username = data["username"],
+                password = pw_hash
+            )
+            db.session.add(user)
+            db.session.flush()
 
-        db.session.commit()
+            db.session.commit()
+            return user
 
-        return user.id
+        except Exception as e:
+            return 0
 
-    def login(data) -> int:
+    def login(data) -> User | int:
         pw_hash = bcrypt.generate_password_hash(data["password"])
         query: Query = db.session.query(User)
-        result: User = query.filter(User.username == data["username"]).first()
-
-        is_valid = bcrypt.check_password_hash(result.password, data["password"])
-        
-        return result.id if is_valid else 0
+        user: User = query.filter(User.username == data["username"]).first()
+        is_valid = bcrypt.check_password_hash(user.password, data["password"])
+        print(pw_hash)
+        print(user.password)
+        return user if is_valid else 0

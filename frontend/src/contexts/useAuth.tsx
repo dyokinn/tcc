@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom"
 
 interface ICustomAuthContext {
     userId: number,
-    login: (username: string, password:string, withCreate: boolean) => any,
+    username: string,
+    getAccess: (username: string, password:string, withCreate: boolean) => any,
     logout: () => any
 }
 
@@ -17,12 +18,18 @@ export function AuthContextProvider(props:any) {
         const initialState = localStorage.getItem("userId")
         return Number(initialState)
     }
+    
+    function getUsername(){
+        const initialState = localStorage.getItem("username")
+        return String(initialState)
+    }
 
     // Hook de estado para o contexto
     const [userId, setUserId] = useState(getUserId)
+    const [username, setUsername] = useState(getUsername)
     const navigate = useNavigate()
 
-    async function login(username: string, password:string, withCreate:boolean = false) {
+    async function getAccess(username: string, password:string, withCreate:boolean = false) {
         try {
             let response = await api.post(
                 "/users/" + (withCreate ? "register" : "login"),
@@ -32,11 +39,14 @@ export function AuthContextProvider(props:any) {
                 }
             )
             
-            setUserId(response.data.userId)
-            localStorage.setItem("userId", response.data.userId);
+            setUserId(response.data.user.id)
+            setUsername(response.data.user.username)
+            localStorage.setItem("userId", response.data.user.id);
+            localStorage.setItem("username", response.data.user.username);
             navigate("/scopes")
-        } catch (error) {
-            window.alert("Error: wrong credentials")
+
+        } catch (error: any) {
+            window.alert(error.response.data.message)
             console.log(error);
         }
     }
@@ -44,10 +54,11 @@ export function AuthContextProvider(props:any) {
     function logout() {
         localStorage.clear()
         setUserId(0)
+        setUsername("")
     }
 
     return(
-      <CustomAuthContext.Provider value = {{userId, login, logout}}>
+      <CustomAuthContext.Provider value = {{userId, username, getAccess, logout}}>
         {props.children}
       </CustomAuthContext.Provider>
     )

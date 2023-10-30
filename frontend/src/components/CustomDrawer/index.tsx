@@ -98,7 +98,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function CustomDrawer(props: any) {
   const theme = useTheme()
   const {open, setOpen} = useContext(CustomDrawerContext);
-  const {userId} = useContext(CustomAuthContext);
+  const {userId, username} = useContext(CustomAuthContext);
 
   const handleDraweropen = () => {    
     setOpen(true);
@@ -125,9 +125,15 @@ export default function CustomDrawer(props: any) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Semantech | v1.0.0 | 2023
-          </Typography>
+          <div className='toolbar'>
+            <Typography variant="h6" noWrap component="div">
+                Semantech | v1.0.0 | 2023
+            </Typography>
+            <Typography variant="h6" noWrap component="div">
+                {username} 
+            </Typography>
+
+          </div>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" className='drawer-bar' open={open}>

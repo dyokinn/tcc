@@ -10,10 +10,10 @@ const useNearOptions = () => {
         if (!baseTextContent.includes(firstOption) || !baseTextContent.includes(secondOption)){
             if (window.confirm("One or more selected options are not in the base text content! Are you sure to proceed anyway?")) {
                 setNearOptions([...nearOptions, newOption])
-                setFirstOption("")
-                setSecondOption("")
-                return
             }
+            setFirstOption("")
+            setSecondOption("")
+            return
         }
         setNearOptions([...nearOptions, newOption])
         setFirstOption("")

@@ -7,7 +7,7 @@ import "./index.scss"
 
 const Login = () => {
 
-    const {login, logout} = useContext(CustomAuthContext)
+    const {getAccess, logout} = useContext(CustomAuthContext)
 
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
@@ -25,8 +25,8 @@ const Login = () => {
                     <CustomTextInput disabled={false} label={"password"} value={password} onChange={(e: any) => setPassword(e.target.value)}/>
                 </div>
                 <div id="actions">
-                    <CustomButton disabled={false} variant="contained" onClick={e => login(username, password, false)}>Login</CustomButton>
-                    <CustomButton disabled={false} variant="contained" onClick={e => login(username, password, true)}>Signup</CustomButton>
+                    <CustomButton disabled={false} variant="contained" onClick={e => getAccess(username, password, false)}>Login</CustomButton>
+                    <CustomButton disabled={false} variant="contained" onClick={e => getAccess(username, password, true)}>Signup</CustomButton>
                 </div>
             </div>
         </CustomDrawer>

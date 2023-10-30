@@ -13,6 +13,14 @@ class ScopeController:
         return scope_schema.dump(result)
 
     @staticmethod
+    def get_by_user_id(id:int) -> dict | list[dict]:
+        scope_schema = ScopeSchema(many = True)
+
+        query: Query = db.session.query(Scope).join(Scope.texts, isouter=True)
+        result = query.filter(Scope.user_id == id).all()
+        return scope_schema.dump(result)
+
+    @staticmethod
     def create(data) -> dict:
         scope_schema = ScopeSchema()
 

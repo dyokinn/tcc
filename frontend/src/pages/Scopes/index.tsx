@@ -19,7 +19,7 @@ const Scopes = () => {
     useEffect(() => {
         
         const getAllScopes = async () => {
-            await getScopes()
+            await getScopes(userId)
         }
         getAllScopes()
         }

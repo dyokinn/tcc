@@ -9,18 +9,20 @@
     padding: 16px;
     display: flex;
     flex-direction: column;
+
     .info{
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        padding-left: 5%;
+        padding-left: 2%;
         box-sizing: border-box;
 
     .info-box{
         display: flex;
         align-items: center;
-        gap: 56px;
+        justify-content: space-between;
+        width: 60%;
     }
 
     .actions{
